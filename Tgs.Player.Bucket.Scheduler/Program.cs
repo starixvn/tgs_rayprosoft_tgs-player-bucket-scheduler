@@ -63,5 +63,6 @@ app.MapHangfireDashboard("/hangfire",
     });
 
 app.JobRegistration();
+app.MapHealthChecks("/healthz");
 
 app.Run();
