@@ -6,15 +6,18 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+ARG BuildConfiguration=Release
 WORKDIR /src
+COPY ["nuget.config", "."]
 COPY ["Tgs.Player.Bucket.Scheduler/Tgs.Player.Bucket.Scheduler.csproj", "Tgs.Player.Bucket.Scheduler/"]
 RUN dotnet restore "Tgs.Player.Bucket.Scheduler/Tgs.Player.Bucket.Scheduler.csproj"
 COPY . .
 WORKDIR "/src/Tgs.Player.Bucket.Scheduler"
-RUN dotnet build "Tgs.Player.Bucket.Scheduler.csproj" -c Release -o /app/build
+RUN dotnet build "Tgs.Player.Bucket.Scheduler.csproj" -c $BuildConfiguration -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Tgs.Player.Bucket.Scheduler.csproj" -c Release -o /app/publish /p:UseAppHost=false
+ARG BuildConfiguration
+RUN dotnet publish "Tgs.Player.Bucket.Scheduler.csproj" -c $BuildConfiguration -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
