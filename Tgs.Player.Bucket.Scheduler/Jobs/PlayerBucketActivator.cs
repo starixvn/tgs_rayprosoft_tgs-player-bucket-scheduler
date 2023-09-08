@@ -16,6 +16,7 @@ public class PlayerBucketActivator : JobActivator
         _logger = logger;
     }
 
+    [AutomaticRetry(Attempts = 1)]
     public async Task FillInAsync(PerformContext context)
     {
         var createdTime = context.BackgroundJob.CreatedAt;

@@ -7,7 +7,7 @@ using Tgs.Fill.In.Player.Bucket.Client;
 
 namespace Tgs.Player.Bucket.Scheduler;
 
-[ManagementPage("PlayerBucket", "填水桶")]
+[ManagementPage(MenuName = "PlayerBucket", Title = nameof(JobManagement))]
 public class JobManagement : IJob
 {
     private readonly IFillInPlayerBucketClient _fillInPlayerBucketClient;
@@ -21,15 +21,14 @@ public class JobManagement : IJob
 
     [DisplayName("fill in player bucket")]
     [Description("輸入指定時間填水桶")]
-    [AutomaticRetry(Attempts = 1)]
-    [DisableConcurrentExecution(90)]
+    [Queue("default")]
     public async Task FillInPlayerBucketAsync(
+        PerformContext context, IJobCancellationToken token,
         [DisplayData("指定日期時間",
             "2021/02/18 00:00",
             "Default utc offset",
             "2023/09/01 00:00")]
-        string dateTime,
-        PerformContext context, IJobCancellationToken token)
+        string dateTime)
     {
         _logger.LogInformation($"Start time:{DateTime.UtcNow}");
 
