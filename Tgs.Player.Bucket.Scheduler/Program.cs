@@ -51,9 +51,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-app.MapHealthChecks("/health");
-app.UseHangfireDashboard();
-app.MapHangfireDashboard("/hangfire",
+app.UseHangfireDashboard("/hangfire",
     new()
     {
         Authorization = new[]
@@ -63,6 +61,7 @@ app.MapHangfireDashboard("/hangfire",
     });
 
 app.JobRegistration();
+
 app.MapHealthChecks("/healthz");
 
 app.Run();
