@@ -1,4 +1,3 @@
-using System.Reflection;
 using Hangfire;
 using Hangfire.Console;
 using Hangfire.Dashboard.Management.v2;
@@ -9,6 +8,7 @@ using Tgs.Player.Bucket.Scheduler;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseSentry();
 builder.Configuration
     .AddJsonFile("/config/appsettings.json", true)
     .AddEnvironmentVariables();
@@ -19,6 +19,7 @@ builder.Services
         var config = sp.GetRequiredService<IConfiguration>();
         options.Url = config.GetValue<Uri>("PlayerBucketScheduler:FillInPlayerBucket")!;
     });
+
 
 builder.Services.AddHangfire((sp, config) =>
 {
@@ -35,7 +36,7 @@ builder.Services.AddHangfire((sp, config) =>
         .UseRedisStorage(connectionString, options)
         .UseConsole();
 
-    config.UseManagementPages(new[]{ typeof(JobManagement).Assembly });
+    config.UseManagementPages(new[] { typeof(JobManagement).Assembly });
 });
 
 builder.Services.AddHangfireServer(options =>
